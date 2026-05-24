@@ -4,7 +4,7 @@ import com.example.demosecurity.dtos.request.LoginRequestDto;
 import com.example.demosecurity.dtos.request.UserRequestDto;
 import com.example.demosecurity.dtos.response.LoginResponseDto;
 import com.example.demosecurity.dtos.response.UserResponseDto;
-import com.example.demosecurity.services.impl.AuthServiceImpl;
+import com.example.demosecurity.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthServiceImpl authService;
+    private final AuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<UserResponseDto> register(@RequestBody UserRequestDto request) {
