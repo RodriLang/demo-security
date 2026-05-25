@@ -48,18 +48,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorResponseDto> handleBadCredentials(BadCredentialsException e, HttpServletRequest request) {
-        ErrorResponseDto response = buidResponse(HttpStatus.UNAUTHORIZED, e.getMessage(), request.getServletPath());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-    }
-
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<ErrorResponseDto> handleUsernameNotFound(UsernameNotFoundException e, HttpServletRequest request) {
-        ErrorResponseDto response = buidResponse(HttpStatus.UNAUTHORIZED, e.getMessage(), request.getServletPath());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleException(Exception e, HttpServletRequest request) {
         ErrorResponseDto response = buidResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), request.getServletPath());
