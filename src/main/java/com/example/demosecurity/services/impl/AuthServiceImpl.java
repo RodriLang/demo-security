@@ -27,15 +27,24 @@ public class AuthServiceImpl implements AuthService {
 
     public LoginResponseDto login(LoginRequestDto request) {
 
+        // Delega la autenticación a Spring Security.
+    //
+    // El AuthenticationManager utilizará internamente:
+    // - UserDetailsService
+    // - PasswordEncoder
+    // - AuthenticationProvider
         Authentication authentication = authenticationManager.authenticate(
+                // Representa las credenciales enviadas por el usuario
                 new UsernamePasswordAuthenticationToken(
                         request.username(),
                         request.password()
                 )
         );
 
+        // Obtiene el usuario autenticado retornado por Spring Security
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
+        // Se genera un JWT firmado para el usuario autenticado
         String token = jwtService.generateToken(userDetails);
 
         return new LoginResponseDto(token);

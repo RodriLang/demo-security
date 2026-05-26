@@ -85,6 +85,13 @@ public class SecurityConfig {
 
     // AuthenticationProvider encargado de autenticar usuarios
     // utilizando UserDetailsService y PasswordEncoder.
+    //
+    // Spring Security puede configurar automáticamente un
+    // DaoAuthenticationProvider si detecta un UserDetailsService
+    // y un PasswordEncoder en el contexto.
+    //
+    // Se define explícitamente para tener mayor control y hacer
+    // más visible la configuración del mecanismo de autenticación.
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(
             UserDetailsService userDetailsService,

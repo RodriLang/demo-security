@@ -29,7 +29,8 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto createUser(UserRequestDto request) {
 
         User user = userMapper.toEntity(request);
-        // Seteamos la contraseña encriptada, nunca en texto plano
+        // La contraseña se almacena hasheada utilizando BCrypt.
+        // Nunca debe persistirse en texto plano.
         user.setPassword(passwordEncoder.encode(request.password()));
 
 
