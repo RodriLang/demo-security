@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+// Adaptador entre la entidad User de la aplicación
+// y el modelo de autenticación de Spring Security.
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
@@ -17,13 +19,8 @@ public class CustomUserDetails implements UserDetails {
         return user.getId();
     }
 
-    public Collection<String> getRoles() {
-        return user.getRoles()
-                .stream()
-                .map(role -> role.getName().name())
-                .toList();
-    }
-
+    // Spring Security trabaja con authorities.
+    // Por convención los roles utilizan el prefijo ROLE_
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 

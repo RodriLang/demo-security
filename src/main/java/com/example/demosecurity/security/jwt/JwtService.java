@@ -22,6 +22,11 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private Long jwtExpiration;
 
+    // Genera un JWT firmado que contiene:
+    // - username (subject)
+    // - roles/authorities
+    // - fecha de emisión
+    // - fecha de expiración
     public String generateToken(UserDetails userDetails) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + jwtExpiration);
@@ -33,9 +38,11 @@ public class JwtService {
 
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
+                // Se agregan los roles como claim personalizado
                 .claim("roles", roles)
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
+                // Firma el token utilizando HMAC SHA-256 y la clave secreta
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -44,13 +51,7 @@ public class JwtService {
         return extractAllClaims(token).getSubject();
     }
 
-    public List<String> extractRoles(String token) {
-
-        Claims claims = extractAllClaims(token);
-
-        return claims.get("roles", List.class);
-    }
-
+    // Valida la firma del token y extrae sus claims
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
@@ -60,6 +61,10 @@ public class JwtService {
                 .getBody();
     }
 
+    // Verifica:
+    // - que el token pertenezca al usuario
+    // - que no esté expirado
+    // - y que la cuenta siga habilitada
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()))
@@ -68,6 +73,7 @@ public class JwtService {
                 && userDetails.isEnabled();
     }
 
+    // Convierte la clave secreta Base64 en una clave HMAC utilizable
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
 
