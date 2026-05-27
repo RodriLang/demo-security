@@ -165,7 +165,7 @@ git checkout basic-auth-default
 # o
 git checkout basic-auth-credentials
 # o
-git checkout jwt-token
+git checkout jwt-accessToken
 ```
 
 **3. Ejecutar la aplicación:**

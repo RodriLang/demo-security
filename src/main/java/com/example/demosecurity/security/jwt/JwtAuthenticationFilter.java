@@ -1,13 +1,14 @@
 package com.example.demosecurity.security.jwt;
 
-import com.example.demosecurity.exceptions.response.ErrorResponseDto;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,14 +31,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
         // Obtiene el header Authorization de la request
         final String authHeader = request.getHeader("Authorization");
 
-        // Si no hay Bearer token, se continúa la cadena de filtros.
+        // Si no hay Bearer accessToken, se continúa la cadena de filtros.
         // La request podrá seguir siendo procesada como pública o será
         // rechazada más adelante por Spring Security si el endpoint requiere autenticación.
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -51,23 +52,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String username;
 
         try {
-
-            // Extrae el username desde el token.
-            // Si el token expiró o es inválido se devuelve 401.
             username = jwtService.extractUsername(jwt);
-
         } catch (ExpiredJwtException e) {
-
-            writeUnauthorizedResponse(
-                    response,
-                    "El token expiró. Inicie sesión nuevamente."
-            );
-            return;
-
+            throw new CredentialsExpiredException("The access token has expired", e);
         } catch (Exception e) {
-
-            writeUnauthorizedResponse(response, "Token inválido.");
-            return;
+            throw new BadCredentialsException("Invalid access token", e);
         }
 
         // Obtiene la autenticación actual del contexto de seguridad.
@@ -77,7 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().getAuthentication();
 
         // Solo se autentica al usuario si:
-        // 1. El token contiene un username válido
+        // 1. El accessToken contiene un username válido
         // 2. No existe una autenticación previa
         if (username != null && authentication == null) {
 
@@ -90,11 +79,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserDetails userDetails =
                         userDetailsService.loadUserByUsername(username);
 
-                // Verifica firma, expiración y pertenencia del token
+                // Verifica firma, expiración y pertenencia del accessToken
                 if (!jwtService.isTokenValid(jwt, userDetails)) {
-
-                    writeUnauthorizedResponse(response, "Token inválido.");
-                    return;
+                    throw new BadCredentialsException("Invalid access token");
                 }
 
                 // Representa un usuario autenticado dentro de Spring Security
@@ -118,9 +105,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         .setAuthentication(authToken);
 
             } catch (Exception e) {
-
-                writeUnauthorizedResponse(response, "Token inválido.");
-                return;
+                throw new BadCredentialsException("Invalid access token", e);
             }
         }
 
@@ -128,32 +113,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    // Construye manualmente una respuesta HTTP 401 Unauthorized
-    // para devolver un error consistente en formato JSON.
-    //
-    // Se utiliza dentro del filtro porque en esta etapa todavía
-    // no interviene el manejo global de excepciones de Spring
-    // (@RestControllerAdvice / ExceptionHandler).
-    private void writeUnauthorizedResponse(HttpServletResponse response,
-                                           String message) throws IOException {
-
-        // Código HTTP 401 Unauthorized
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
-        // Se define que la respuesta será JSON codificado en UTF-8
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        // Se arma una DTO de respuesta de error
-        ErrorResponseDto error = ErrorResponseDto.builder()
-                .status(HttpStatus.UNAUTHORIZED.value())
-                .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
-                .message(message)
-                .build();
-
-        // Convierte el objeto Java a JSON y lo escribe en la respuesta HTTP
-        response.getWriter().write(
-                objectMapper.writeValueAsString(error)
-        );
-    }
+    // Ya no necesitamos el metodo writeUnauthorizedResponse()
+    // vamos a implementar la interface AuthenticationEntryPoint
+    // para manejar las excepciones con la clase JwtAuthenticationEntryPoint
 }

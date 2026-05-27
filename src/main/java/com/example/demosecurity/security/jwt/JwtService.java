@@ -27,7 +27,7 @@ public class JwtService {
     // - roles/authorities
     // - fecha de emisión
     // - fecha de expiración
-    public String generateToken(UserDetails userDetails) {
+    public String generateAccessToken(UserDetails userDetails) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + jwtExpiration);
 
@@ -42,7 +42,7 @@ public class JwtService {
                 .claim("roles", roles)
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
-                // Firma el token utilizando HMAC SHA-256 y la clave secreta
+                // Firma el accessToken utilizando HMAC SHA-256 y la clave secreta
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -51,7 +51,7 @@ public class JwtService {
         return extractAllClaims(token).getSubject();
     }
 
-    // Valida la firma del token y extrae sus claims
+    // Valida la firma del accessToken y extrae sus claims
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
@@ -62,7 +62,7 @@ public class JwtService {
     }
 
     // Verifica:
-    // - que el token pertenezca al usuario
+    // - que el accessToken pertenezca al usuario
     // - que no esté expirado
     // - y que la cuenta siga habilitada
     public boolean isTokenValid(String token, UserDetails userDetails) {

@@ -1,9 +1,10 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/ludoteca_utn
-    username: root
-    password: 89012535
+    url: ${DATABASE_URL:jdbc:mysql://localhost:3306/ludoteca_utn}
+    username: ${DATABASE_USERNAME:root}
+    password: ${DATABASE_PASSWORD:89012535}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -12,8 +13,15 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
+
+logging:
+  level:
+    com.example.demosecurity: DEBUG
+
 jwt:
-  secret: miClaveSuperSecretaParaJwtCodificadaEnBase64
-  expiration: 3600000
+  secret: ${JWT_SECRET:miClaveSuperSecretaParaJwtCodificadaEnBase64}
+  expiration: 15m
+  refresh-expiration: 7d

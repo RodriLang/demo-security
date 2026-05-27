@@ -2,7 +2,6 @@ package com.example.demosecurity.services.impl;
 
 import com.example.demosecurity.dtos.request.UserRequestDto;
 import com.example.demosecurity.dtos.response.UserResponseDto;
-import com.example.demosecurity.enums.RoleType;
 import com.example.demosecurity.mappers.UserMapper;
 import com.example.demosecurity.models.Role;
 import com.example.demosecurity.models.User;

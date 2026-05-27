@@ -1,19 +1,23 @@
 package com.example.demosecurity.security;
 
 import com.example.demosecurity.models.User;
-import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-// Adaptador entre la entidad User de la aplicación
-// y el modelo de autenticación de Spring Security.
-@RequiredArgsConstructor
-public class CustomUserDetails implements UserDetails {
+/**
+ * Esta clase funciona como un Adaptador
+ * entre la entidad User de la aplicación
+ * y el modelo de autenticación de Spring Security.
+*/
 
-    private final User user;
+@NullMarked// Declara @NonNull todos los atributos de la clase
+public record CustomUserDetails(User user) implements UserDetails {
+
+    private static final String ROLE_PREFIX = "ROLE_";
 
     public Long getId() {
         return user.getId();
@@ -27,7 +31,7 @@ public class CustomUserDetails implements UserDetails {
         return user.getRoles()
                 .stream()
                 .map(role -> new SimpleGrantedAuthority(
-                        "ROLE_" + role.getName().name()
+                        ROLE_PREFIX + role.getName().name()
                 ))
                 .toList();
     }
@@ -41,4 +45,8 @@ public class CustomUserDetails implements UserDetails {
     public String getUsername() {
         return user.getUsername();
     }
+
+    // Los demás métodos de la interface utilizan
+    // la implementación por defecto siendo que
+    // nuestra entidad no tiene esos atributos
 }
