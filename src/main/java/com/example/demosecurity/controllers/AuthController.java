@@ -6,7 +6,7 @@ import com.example.demosecurity.dtos.request.RefreshTokenRequest;
 import com.example.demosecurity.dtos.request.UserRequestDto;
 import com.example.demosecurity.dtos.response.AuthResponse;
 import com.example.demosecurity.dtos.response.UserResponseDto;
-import com.example.demosecurity.services.impl.AuthServiceImpl;
+import com.example.demosecurity.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthServiceImpl authService;
+    private final AuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<UserResponseDto> register(@RequestBody UserRequestDto request) {
@@ -40,7 +40,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refreshToken(RefreshTokenRequest request) {
+    public ResponseEntity<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
         log.debug("[AuthController] Refresh accessToken request received");
         AuthResponse response = authService.refresh(request);
         return ResponseEntity.ok(response);
