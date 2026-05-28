@@ -49,11 +49,14 @@ El proyecto está dividido en ramas para mostrar una evolución progresiva de la
 Contiene la versión más completa y actual del proyecto.
 
 Incluye:
-- JWT
-- Roles
+- Autenticación con JWT
+- Roles y permisos
 - Filtros personalizados
 - Manejo de usuarios
 - Autorización por endpoints
+- Refresh tokens
+- Logout con revocación de tokens
+- Manejo centralizado de excepciones en la cadena de seguridad
 
 ---
 
