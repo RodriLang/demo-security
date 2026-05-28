@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 
@@ -25,7 +26,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${jwt.refresh-expiration}")
-    private long refreshTokenExpiration;
+    private Duration refreshTokenExpiration;
 
     @Override
     public String generateRefreshToken(String userEmail) {
@@ -38,7 +39,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         RefreshToken refreshToken = RefreshToken.builder()
                 .token(token)
                 .subject(userEmail)
-                .expiresAt(Instant.now().plusMillis(refreshTokenExpiration))
+                .expiresAt(Instant.now().plusMillis(refreshTokenExpiration.toMillis()))
                 .createdAt(Instant.now())
                 .revoked(false)
                 .build();

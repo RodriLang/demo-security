@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String jwtSecretKey;
     @Value("${jwt.expiration}")
-    private Long jwtExpiration;
+    private Duration jwtExpiration;
 
     // Genera un JWT firmado que contiene:
     // - username (subject)
@@ -29,7 +30,7 @@ public class JwtService {
     // - fecha de expiración
     public String generateAccessToken(UserDetails userDetails) {
         Date now = new Date();
-        Date expirationDate = new Date(now.getTime() + jwtExpiration);
+        Date expirationDate = new Date(now.getTime() + jwtExpiration.toMillis());
 
         List<String> roles = userDetails.getAuthorities()
                 .stream()
