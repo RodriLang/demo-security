@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -34,12 +35,18 @@ public class SecurityConfig {
      * Spring Security construirá internamente la cadena de filtros
      * a partir de esta configuración.
      */
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   // Recibimos por parámetro una fuente de configuración CORS
+                                                   CorsConfigurationSource corsConfigurationSource) throws Exception {
         return http
                 // Se deshabilita CSRF porque la aplicación utiliza autenticación stateless con JWT.
                 // CSRF tiene sentido principalmente en aplicaciones basadas en sesión y cookies.
                 .csrf(AbstractHttpConfigurer::disable)
+
+                // Agregamos la configuración cors a nuestra cadena de filtros
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
 
                 // Hacemos una configuración general de acceso
                 // Definimos las reglas específicas en los Controller
