@@ -127,6 +127,47 @@ Authorization: Bearer eyJhbGciOi...
 ```
 
 ---
+## `refresh-token` — Etapa 4: Refresh Tokens y renovación de sesión
+
+**Contenido:**
+
+- Access Token + Refresh Token
+- Renovación automática de sesión
+- Revocación de refresh tokens
+- Logout con invalidación de tokens
+- Persistencia de refresh tokens en base de datos
+- JWT stateless
+- Manejo centralizado de errores de autenticación
+- AuthenticationEntryPoint
+- Autorización con @PreAuthorize
+
+**Objetivo pedagógico:** comprender cómo funcionan los refresh tokens en aplicaciones modernas, diferencia entre access token y refresh token, renovación segura de sesiones, invalidación de tokens y separación entre autenticación y autorización.
+
+**Flujo de autenticación completo:**
+
+```
+1. El usuario realiza login
+2. El backend devuelve:
+   - access token
+   - refresh token
+
+3. El cliente utiliza el access token para acceder a endpoints protegidos
+
+4. Cuando el access token expira:
+   - el cliente envía el refresh token
+   - el backend valida el refresh token
+   - el backend genera nuevos tokens
+
+5. Durante logout:
+   - el refresh token es revocado
+   - la sesión queda invalidada
+```
+
+**Diferencia entre tokens:**
+| Tipo | Uso | Duración |
+|---|---|---|
+| Access Token | Acceder a endpoints protegidos | Corta |
+| Refresh Token | Renovar sesión | Más larga |
 
 ## 📚 Conceptos trabajados
 
@@ -146,6 +187,17 @@ Authorization: Bearer eyJhbGciOi...
 - Filtros personalizados con `OncePerRequestFilter`
 - Stateless APIs
 - Tokens en headers
+
+### Seguridad nivel Produción
+- Refresh Tokens
+- Revocación de tokens
+- Rotación de refresh tokens
+- APIs stateless
+- AuthenticationEntryPoint
+- @PreAuthorize
+- Manejo de excepciones en filtros
+- Persistencia de sesiones seguras
+- Seguridad moderna en APIs REST
 
 ---
 
@@ -210,7 +262,8 @@ Se recomienda recorrer las ramas en este orden para entender cómo evoluciona la
 1️⃣  basic-auth-default
 2️⃣  basic-auth-credentials
 3️⃣  jwt-token
-4️⃣  main
+4️⃣  refresh-token
+5️⃣  main
 ```
 
 ---
