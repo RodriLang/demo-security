@@ -2,18 +2,15 @@ package com.example.demosecurity.services.impl;
 import com.example.demosecurity.dtos.request.LoginRequestDto;
 import com.example.demosecurity.dtos.request.UserRequestDto;
 import com.example.demosecurity.dtos.response.LoginResponseDto;
-import com.example.demosecurity.dtos.response.RoleResponseDto;
 import com.example.demosecurity.dtos.response.UserResponseDto;
-import com.example.demosecurity.enums.RoleType;
-import com.example.demosecurity.security.CustomUserDetails;
 import com.example.demosecurity.services.AuthService;
-import com.example.demosecurity.services.RoleService;
 import com.example.demosecurity.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,10 +35,12 @@ public class AuthServiceImpl implements AuthService {
                 )
         );
 
-        CustomUserDetails userDetails =
-                (CustomUserDetails) authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        List<String> roles = userDetails.getRoles().stream().toList();
+        List<String> roles = userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
 
         return new LoginResponseDto(
                 userDetails.getUsername(),

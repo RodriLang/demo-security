@@ -1,6 +1,6 @@
 package com.example.demosecurity.dtos.response;
 
-import com.example.demosecurity.enums.RoleType;
+import java.util.List;
 
 public record UserResponseDto(
 
@@ -8,6 +8,6 @@ public record UserResponseDto(
 
         String username,
 
-        RoleType role
+        List<RoleResponseDto> roles
 ) {
 }
