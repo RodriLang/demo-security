@@ -2,6 +2,7 @@ package com.example.demosecurity.services.impl;
 
 import com.example.demosecurity.dtos.request.RoleRequestDto;
 import com.example.demosecurity.dtos.response.RoleResponseDto;
+import com.example.demosecurity.enums.RoleType;
 import com.example.demosecurity.exceptions.DuplicatedEntityException;
 import com.example.demosecurity.exceptions.EntityNotFoundException;
 import com.example.demosecurity.models.Role;
@@ -17,6 +18,12 @@ import java.util.List;
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
+
+    @Override
+    public Role findByName(RoleType roleName) {
+        return roleRepository.findByName(roleName)
+                .orElseThrow(() -> new EntityNotFoundException("Role no encontrado"));
+    }
 
     @Override
     public List<RoleResponseDto> findAll() {
