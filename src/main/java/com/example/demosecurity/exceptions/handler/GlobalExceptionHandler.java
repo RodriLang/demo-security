@@ -60,6 +60,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
+    @ExceptionHandler(DuplicatedEntityException.class)
+    public ResponseEntity<ErrorResponseDto> handleDuplicatedEntity(DuplicatedEntityException e, HttpServletRequest request) {
+        ErrorResponseDto response = buidResponse(HttpStatus.CONFLICT, e.getMessage(), request.getServletPath());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleException(Exception e, HttpServletRequest request) {
         ErrorResponseDto response = buidResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), request.getServletPath());

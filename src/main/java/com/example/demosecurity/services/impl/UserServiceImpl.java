@@ -3,6 +3,7 @@ package com.example.demosecurity.services.impl;
 import com.example.demosecurity.dtos.request.UserRequestDto;
 import com.example.demosecurity.dtos.response.UserResponseDto;
 import com.example.demosecurity.enums.RoleType;
+import com.example.demosecurity.exceptions.DuplicatedEntityException;
 import com.example.demosecurity.mappers.UserMapper;
 import com.example.demosecurity.models.RoleEntity;
 import com.example.demosecurity.models.UserEntity;
@@ -27,6 +28,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto createUser(UserRequestDto request) {
 
+        validateUsername(request.username());
+
         UserEntity userEntity = userMapper.toEntity(request);
         // Seteamos la contraseña encriptada, nunca en texto plano
         userEntity.setPassword(passwordEncoder.encode(request.password()));
@@ -40,5 +43,11 @@ public class UserServiceImpl implements UserService {
         UserEntity savedUserEntity = userRepository.save(userEntity);
 
         return userMapper.toDto(savedUserEntity);
+    }
+
+    private void validateUsername(String username){
+        if(userRepository.existsByUsername(username)){
+            throw new DuplicatedEntityException("Ya existe un usuario registrado como " + username);
+        }
     }
 }
