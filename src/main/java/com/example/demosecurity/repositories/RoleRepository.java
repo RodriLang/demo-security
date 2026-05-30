@@ -1,16 +1,16 @@
 package com.example.demosecurity.repositories;
 
 import com.example.demosecurity.enums.RoleType;
-import com.example.demosecurity.models.Role;
+import com.example.demosecurity.models.RoleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
 
-    Optional<Role> findByName(RoleType name);
+    Optional<RoleEntity> findByRoleName(RoleType roleName);
 
-    boolean existsByName(RoleType name);
+    boolean existsByRoleName(RoleType roleName);
 }

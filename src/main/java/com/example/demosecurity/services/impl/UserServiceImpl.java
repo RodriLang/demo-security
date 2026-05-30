@@ -4,7 +4,7 @@ import com.example.demosecurity.dtos.request.UserRequestDto;
 import com.example.demosecurity.dtos.response.UserResponseDto;
 import com.example.demosecurity.enums.RoleType;
 import com.example.demosecurity.mappers.UserMapper;
-import com.example.demosecurity.models.Role;
+import com.example.demosecurity.models.RoleEntity;
 import com.example.demosecurity.models.UserEntity;
 import com.example.demosecurity.repositories.UserRepository;
 import com.example.demosecurity.services.RoleService;
@@ -33,9 +33,9 @@ public class UserServiceImpl implements UserService {
 
 
         // Buscamos el Role en la base de datos por su RoleType
-        Role role = roleService.findByName(RoleType.USER);
+        RoleEntity roleEntity = roleService.findByName(RoleType.USER);
         // Asignamos el ROLE_USER por defecto
-        userEntity.setRoles(Set.of(role));
+        userEntity.setRoles(Set.of(roleEntity));
 
         UserEntity savedUserEntity = userRepository.save(userEntity);
 

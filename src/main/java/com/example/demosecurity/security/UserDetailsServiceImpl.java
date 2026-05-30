@@ -35,7 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<SimpleGrantedAuthority> authorities = userEntity.getRoles()
                 .stream()
                 .map(role -> new SimpleGrantedAuthority(
-                        "ROLE_" + role.getName().name()
+                        "ROLE_" + role.getRoleName().name()
                 ))
                 .toList();
 

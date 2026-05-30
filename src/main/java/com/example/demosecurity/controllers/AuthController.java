@@ -24,6 +24,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.register(request));
     }
 
+    // Este endpoint solo nos sirve como ejemplo de un login real, ya que
+    // cuando usamos BasicAuth las credenciales se envían en un header Authentication
+    // en cada request, por lo que un endpoint de login no tiene mucha utilidad
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto request) {
         return ResponseEntity.ok(authService.login(request));
