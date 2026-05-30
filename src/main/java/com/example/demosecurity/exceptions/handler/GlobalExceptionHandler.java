@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
-    private ErrorResponseDto buidResponse(HttpStatus status, String message, String path) {
+    private ErrorResponseDto buildResponse(HttpStatus status, String message, String path) {
         return ErrorResponseDto.builder()
                 .status(status.value())
                 .error(status.getReasonPhrase())
