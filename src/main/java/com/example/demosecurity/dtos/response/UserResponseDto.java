@@ -1,6 +1,6 @@
 package com.example.demosecurity.dtos.response;
 
-import java.util.List;
+import java.util.Set;
 
 public record UserResponseDto(
 
@@ -8,6 +8,6 @@ public record UserResponseDto(
 
         String username,
 
-        List<RoleResponseDto> roles
+        Set<RoleResponseDto> roles
 ) {
 }
