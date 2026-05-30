@@ -1,6 +1,6 @@
 package com.example.demosecurity.security;
 
-import com.example.demosecurity.models.User;
+import com.example.demosecurity.models.UserEntity;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,7 +15,7 @@ import java.util.Collection;
 */
 
 @NullMarked// Declara @NonNull todos los atributos de la clase
-public record CustomUserDetails(User user) implements UserDetails {
+public record CustomUserDetails(UserEntity user) implements UserDetails {
 
     private static final String ROLE_PREFIX = "ROLE_";
 
@@ -31,7 +31,7 @@ public record CustomUserDetails(User user) implements UserDetails {
         return user.getRoles()
                 .stream()
                 .map(role -> new SimpleGrantedAuthority(
-                        ROLE_PREFIX + role.getName().name()
+                        ROLE_PREFIX + role.getRoleName().name()
                 ))
                 .toList();
     }

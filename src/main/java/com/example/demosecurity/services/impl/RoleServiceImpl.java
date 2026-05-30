@@ -2,9 +2,11 @@ package com.example.demosecurity.services.impl;
 
 import com.example.demosecurity.dtos.request.RoleRequestDto;
 import com.example.demosecurity.dtos.response.RoleResponseDto;
+import com.example.demosecurity.enums.RoleType;
 import com.example.demosecurity.exceptions.DuplicatedEntityException;
 import com.example.demosecurity.exceptions.EntityNotFoundException;
-import com.example.demosecurity.models.Role;
+import com.example.demosecurity.mappers.RoleMapper;
+import com.example.demosecurity.models.RoleEntity;
 import com.example.demosecurity.repositories.RoleRepository;
 import com.example.demosecurity.services.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -17,43 +19,43 @@ import java.util.List;
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
+
+    @Override
+    public RoleEntity findByName(RoleType roleName) {
+        return roleRepository.findByRoleName(roleName)
+                .orElseThrow(() -> new EntityNotFoundException("Role no encontrado"));
+    }
 
     @Override
     public List<RoleResponseDto> findAll() {
         return roleRepository.findAll()
                 .stream()
-                .map(this::toResponse)
+                .map(roleMapper::toDto)
                 .toList();
     }
 
     @Override
     public RoleResponseDto findById(Long id) {
-        Role role = roleRepository.findById(id)
+        RoleEntity roleEntity = roleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Rol no encontrado"));
 
-        return toResponse(role);
+        return roleMapper.toDto(roleEntity);
     }
 
     @Override
     public RoleResponseDto create(RoleRequestDto request) {
 
-        if (roleRepository.existsByName(request.name())) {
+        if (roleRepository.existsByRoleName(request.name())) {
             throw new DuplicatedEntityException("El rol ya existe");
         }
 
-        Role role = Role.builder()
-                .name(request.name())
+        RoleEntity roleEntity = RoleEntity.builder()
+                .roleName(request.name())
                 .build();
 
-        Role savedRole = roleRepository.save(role);
+        RoleEntity savedRoleEntity = roleRepository.save(roleEntity);
 
-        return toResponse(savedRole);
-    }
-
-    private RoleResponseDto toResponse(Role role) {
-        return new RoleResponseDto(
-                role.getId(),
-                role.getName()
-        );
+        return roleMapper.toDto(savedRoleEntity);
     }
 }
